@@ -1,0 +1,33 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'stylesheets/Navbarstyle.css')}}">
+<nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+      <a class="navbar-brand" href="https://full.io/">FULL Creative</a>
+      <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
+            <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault" style="padding-left: 8.666%;">
+            <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                        <a class="nav-link" href="{{url_for('newmarkdown', userid=userid)}}">New MarkDown <span class="sr-only">(current)</span></a>
+                  </li>
+
+                  <li class="nav-item active">
+                        <a class="nav-link" href="{{url_for('profile', userid=userid)}}">Dashboard</a>
+                  </li>
+            </ul>
+            <div class="form-inline my-2 my-lg-0">
+                  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+                  <!-- Settings button-->
+                  <div class="dropdown">
+                    <button type = "button" class="dropbtn btn my-2 my-sm-0">Settings <i class="fa fa-caret-down"></i></button>
+                    <div class="dropdown-content">
+                      <a href="#">Account</a>
+                      <button button type="button" class="btn btn-link" onclick="switchoff('{{ url_for('logout', userid=userid) }}')">Log out</button>
+                    </div>
+                  </div>
+
+            </div>
+      </div>
+</nav>

@@ -1,0 +1,41 @@
+{% extends '_defaultlayout.html' %}
+    {% block body %}
+        {% if 'user' in session %}
+            <link rel="stylesheet" href="/static/stylesheets/editcontentsstyle.css?v=1.17">
+
+            <div class="row">
+                <div class="col-lg-6 leftcol">
+                    <label for="markdowntext"><h3>MARKDOWN VIEW</h3></label>
+                    <textarea name="markdowntext" id="markdowntext">{{markdown}}</textarea>
+                    <button id="markdownpostbtn" style="float:left;"
+                            onclick="editmarkdown('{{url_for('redefinefunctions', contentid=contentid, type= 'post')}}', 'post')">
+                        Post</button>
+                    <button id="markdownpreviewbtn" style="float:right;"
+                            onclick="editmarkdown('{{url_for('redefinefunctions', contentid=contentid, type='preview')}}', 'preview')">
+                        Preview</button>
+                </div>
+                <div class="col-md-5 rightcol">
+                    <label for="markupdiv"><h3>MARKUP VIEW</h3></label>
+                    <div name="markupdiv" id="markupdiv">{{markup}}</div>
+                </div>
+            </div>
+
+        {% else %}
+            <style>
+                body{
+                    background-image: url('https://images2.alphacoders.com/708/thumb-1920-708647.jpg');
+                }
+                .session-expired{
+                    padding:40px;
+                    background: black;
+                    opacity: .5;
+                    color: white;
+                }
+            </style>
+                <div class = "session-expired container">
+                    <h3>Oops! Your session has expired! You have to log in</h3>
+                    <a href="{{ url_for('login') }}">Log-In again!</a>
+                </div>
+        {% endif %}
+        <script type="text/javascript" src="/static/scripts/editcontentsscript.js"></script>
+    {% endblock %}

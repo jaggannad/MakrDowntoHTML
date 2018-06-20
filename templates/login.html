@@ -1,0 +1,15 @@
+{% extends '_defaultlayout.html' %}
+    {% block body %}
+        <title>SyncMarkDown Login page</title>
+        <style>
+            body{
+                background-image:url('/static/images/loginwallpaper.jpg');
+            }
+            .form-signin{
+                padding: 20px;
+                background: white;
+                opacity: .8;
+            }
+        </style>
+        {% include '/_loginform.html' %}
+    {% endblock %}

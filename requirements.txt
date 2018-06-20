@@ -1,0 +1,5 @@
+flask
+ndb
+markdown2
+text2html
+bs4

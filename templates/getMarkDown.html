@@ -1,0 +1,49 @@
+{% extends '_defaultlayout.html' %}
+
+    {% block body %}
+        <title>{{userinfo.username}}'s Profile page</title>
+        {% if 'user' in session %}
+            <link rel="stylesheet" href="/static/stylesheets/getMarkDownStyle.css?v=1.14">
+            {% include '/_navbar.html' %}<br><br><br><br>
+            <div class="row container">
+                <div class="col-md-5 middlecolprof">
+                    <span id="Mostrecent" style="font-family: 'Pacifico', cursive;  font-size:1.4em;">LAST MODIFIED</span>
+                    <button id="viewbtn" class="btn btn-primary" style="float: right;" onclick="changeView()">VIEW ESCAPED HTML</button>
+                    <br><hr style="background:black; clear:both;">
+                    <div id="middlecolcontentdiv"></div>
+                    <textarea id="middlecolcontenttext"></textarea>
+                </div>
+                <div id="rightcol" class="col-md-6 rightcol">
+                    <div id="rightcolcontentsheading"></div>
+                    <div id="rightcolcontents"></div>
+                    <div id="pagination" style=" width: 100%; padding: 10px;">
+                        <button class="btn btn-primary" style="float:left;" onclick="fetchprevcontent()">PREV</button>
+                        <button class="btn btn-primary" style="float:right;" onclick="fetchnextcontent()">NEXT</button>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <style>
+                body{
+                    background-image: url('https://images2.alphacoders.com/708/thumb-1920-708647.jpg');
+                }
+                .session-expired{
+                    padding:40px;
+                    background: black;
+                    opacity: .5;
+                    color: white;
+                }
+            </style>
+                <div class = "session-expired container">
+                    <h3>Oops! Your session has expired! You have to log in</h3>
+                    <a href="{{ url_for('login') }}">Log-In again!</a>
+                </div>
+        {% endif %}
+        <script>
+            $(document).ready(function(){
+                fetchposts(true, '{{userinfo.username}}');
+            });
+        </script>
+        <script type="text/javascript" src="/static/scripts/mainscript.js"></script>
+    {% endblock %}

@@ -1,0 +1,99 @@
+.leftcol{
+    position: absolute;
+    top: 85px;
+    left: 0px;
+    overflow-y: scroll;
+    height: 85%;
+    border-style: solid;
+    border-width: 0px 0px 0px 0px;
+}
+.middlecolprof{
+    position: absolute;
+    top: 85px;
+    left: 30px;
+    overflow-y: hidden;
+
+    height: 85%;
+    border-style: solid;
+    border-width: 2px 2px 2px 2px;
+    background: #AEB6BF;
+    padding:20px;
+    box-shadow: 5px 10px 12px 12px #888888;
+}
+
+#middlecolcontentdiv{
+    width:100%;
+    height: 100%;
+    padding: 20px;
+    padding-bottom: 100px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    display: block;
+}
+
+#middlecolcontenttext{
+    background: #AEB6BF;
+    width:100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    display: none;
+}
+
+
+.middlecolnew{
+    position: absolute;
+    top: 85px;
+    right: 30px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    height: 85%;
+    border-style: solid;
+    border-width: 2px 2px 2px 2px;
+    background: #AEB6BF;
+    padding:20px;
+    box-shadow: 5px 10px 12px 12px #888888;
+}
+
+.rightcol{
+    position: absolute;
+    top: 85px;
+    right: 0px;
+    overflow-y: hidden;
+    height: 90%;
+    border-style: solid;
+    border-width: 0px 0px 0px 0px;
+}
+
+#rightcolcontents{
+    width:100%;
+    padding: 5px;
+    height: 90%;
+    overflow-y: scroll;
+}
+
+#desc{
+    width: 100%;
+}
+
+.markdowninput{
+    width: 100%;
+    height: 80%;
+}
+
+#markdowntxt{
+    width: 100%;
+    height: 95%;
+}
+
+#htmlconversion{
+    float:left;
+    width: 45%;
+    height: 5%;
+}
+
+#previewhtml{
+    float:right;
+    width: 45%;
+    height: 5%;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MarkDown-HTML</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .col{
+            margin: auto;
+            border: 1px solid blue;
+            position: absolute;
+            top: 85px;
+            overflow-y: scroll;
+            height: 100%;
+            width:100%;
+        }
+        .leftcol{
+            left: 30px;
+        }
+        .rightcol{
+            right: 30px;
+        }
+        .leftcolheading{
+            position: absolute;
+            top: 45px;
+            left: 30px;
+        }
+        .rightcolheading{
+            position: absolute;
+            top: 45px;
+            right: 30px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="row container">
+    <h2 class="leftcolheading">PLAIN HTML</h2>
+    <h2 class="rightcolheading">RENDERED HTML</h2>
+    <textarea id="plainhtml" class="col col-md-5 leftcol" disabled="disabled">{{content}}</textarea>
+    <div id="renderedhtml" class="col col-md-6 rightcol">{{content}}</div>
+</div>
+
+
+</body>
+</html>
