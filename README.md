@@ -1,2 +1,2 @@
-# MakrDowntoHTML
-Convert MarDownt to HTML
+# MarkDowntoHTML
+Convert MarkDown to HTML
