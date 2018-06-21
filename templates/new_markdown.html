@@ -1,9 +1,9 @@
-{% extends '_defaultlayout.html' %}
+{% extends '_default_layout.html' %}
 
     {% block body %}
-        <title>{{username}}'s New MarkDown</title>
+        <title>{{user_name}}'s New MarkDown</title>
         {% if 'user' in session %}
-            <link rel="stylesheet" href="/static/stylesheets/getMarkDownStyle.css?v=1.14">
+            <link rel="stylesheet" href="/static/stylesheets/get_MarkDown_Style.css?v=1.14">
              {% include '/_navbar.html' %}<br><br><br><br>
                <div class="row container">
                     <div class="col-md-5 leftcol">
@@ -13,15 +13,15 @@
                                 <textarea id="markdowntxt" name="markdowntxt" value="{{request.form.markdowntxt}}"
                                           placeholder="Paste your MarkDown Here!" required></textarea><br><br>
                                 <button id="previewhtml" type="button" class="btn-primary"
-                                        onclick="htmlconversion('{{url_for('newmarkdown', userid=userid)}}', 'true')">PREVIEW HTML</button>
+                                        onclick="html_conversion('{{url_for('new_markdown', user_id=user_id)}}', 'true')">PREVIEW HTML</button>
                                 <button id="htmlconversion" type="button" class="btn-primary"
-                                         onclick="htmlconversion('{{url_for('newmarkdown', userid=userid)}}', 'false')">CONVERT & POST</button>
+                                         onclick="html_conversion('{{url_for('new_markdown', user_id=user_id)}}', 'false')">CONVERT & POST</button>
                             </div>
                     </div>
 
                     <div class="col-md-6 middlecolnew">
                         <span id="Mostrecent" style="font-family: 'Pacifico', cursive;  font-size:1.4em;">MarkUp View</span>
-                        <button id="viewbtn" class="btn btn-primary" style="float: right;" onclick="changeView()">VIEW ESCAPED HTML</button>
+                        <button id="viewbtn" class="btn btn-primary" style="float: right;" onclick="change_View()">VIEW ESCAPED HTML</button>
                         <br><hr style="background:black; clear:both;">
                         <div id="middlecolcontentdiv"></div>
                         <textarea id="middlecolcontenttext"></textarea>
@@ -45,5 +45,5 @@
                     <a href="{{ url_for('login') }}">Log-In again!</a>
                 </div>
         {% endif %}
-        <script type="text/javascript" src="/static/scripts/mainscript.js"></script>
+        <script type="text/javascript" src="/static/scripts/main_script.js"></script>
     {% endblock %}

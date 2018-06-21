@@ -1,17 +1,17 @@
-{% extends '_defaultlayout.html' %}
+{% extends '_default_layout.html' %}
     {% block body %}
         {% if 'user' in session %}
-            <link rel="stylesheet" href="/static/stylesheets/editcontentsstyle.css?v=1.17">
+            <link rel="stylesheet" href="/static/stylesheets/edit_contents_style.css?v=1.17">
 
             <div class="row">
                 <div class="col-lg-6 leftcol">
                     <label for="markdowntext"><h3>MARKDOWN VIEW</h3></label>
                     <textarea name="markdowntext" id="markdowntext">{{markdown}}</textarea>
                     <button id="markdownpostbtn" style="float:left;"
-                            onclick="editmarkdown('{{url_for('redefinefunctions', contentid=contentid, type= 'post')}}', 'post')">
+                            onclick="edit_markdown('{{url_for('redefine_functions', content_id=content_id, type= 'post')}}', 'post')">
                         Post</button>
                     <button id="markdownpreviewbtn" style="float:right;"
-                            onclick="editmarkdown('{{url_for('redefinefunctions', contentid=contentid, type='preview')}}', 'preview')">
+                            onclick="edit_markdown('{{url_for('redefine_functions', content_id=content_id, type='preview')}}', 'preview')">
                         Preview</button>
                 </div>
                 <div class="col-md-5 rightcol">
@@ -37,5 +37,5 @@
                     <a href="{{ url_for('login') }}">Log-In again!</a>
                 </div>
         {% endif %}
-        <script type="text/javascript" src="/static/scripts/editcontentsscript.js"></script>
+        <script type="text/javascript" src="/static/scripts/edit_contents_script.js"></script>
     {% endblock %}

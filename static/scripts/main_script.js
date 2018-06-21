@@ -1,25 +1,25 @@
 var next_cursor = '';
 var prev_cursor = '';
-var cursorlist = [''];
+var cursor_list = [''];
 
-function fetchposts(ready, name){
-    $.get('/initialcontents/'+next_cursor, function(data, status){
+function fetch_posts(ready, name){
+    $.get('/initial-contents/'+next_cursor, function(data, status){
         if(data.success == true){
             var i = 0;
-            var firstcontent = 0;
+            var first_content = 0;
 
             document.getElementById('rightcolcontents').innerHTML = "<h3>Recent Conversions!</h3><hr>";
 
             while(data.content[i]){
-                if(ready == true && firstcontent == 0 && data.content[i]['createdby'] == name){
+                if(ready == true && first_content == 0 && data.content[i]['createdby'] == name){
                     document.getElementById('middlecolcontentdiv').innerHTML = data.content[i]['markupcontent'];
                     document.getElementById('middlecolcontenttext').innerHTML = data.content[i]['markupcontent'];
                 }
-                createacordian(data.content[i]);
-                i++; firstcontent++;
+                create_acordian(data.content[i]);
+                i++; first_content++;
             }
             if(data.more == true){
-                cursorlist.push(data.next_cursor);
+                cursor_list.push(data.next_cursor);
                 prev_cursor = next_cursor;
                 next_cursor = data.next_cursor;
             }
@@ -28,47 +28,48 @@ function fetchposts(ready, name){
                 next_cursor = 'none';
             }
         }
+        else if(data.content == null){
+            document.getElementById('rightcolcontents').innerHTML = "<h3>Sorry no feeds to display...</h3><hr>";
+        }
         else{
-            if(data.content == []){
-                document.getElementById('rightcolcontents').innerHTML = "<h3>Sorry no feeds to display...</h3><hr>";
-            }
+            document.getElementById('rightcolcontents').innerHTML = "<h3>Could not fetch feeds! Server Error!...</h3><hr>";
         }
     });
 }
-function createacordian(data){
+function create_acordian(data){
     var id = data['id'];
-    var markupcontent = data.markupcontent.replace(/\n/g, ' ');
-    markupcontent = markupcontent.replace(/'/g, /"/g);
+    var markup_content = data.markup_content.replace(/\n/g, ' ');
+    markup_content = markup_content.replace(/'/g, /"/g);
     var $accordion = $("<div>", {id: 'acordian'+id});
-    var $classcard = $("<div>", {id: "classcard"+id, class: 'card'});
-    var $classcardheader = $("<div>", {id:"heading"+id, class:"card-header"});
+    var $class_card = $("<div>", {id: "classcard"+id, class: 'card'});
+    var $class_card_header = $("<div>", {id:"heading"+id, class:"card-header"});
     var $h5 = $("<h5>", {id: "h5"+id, class: "mb-0"});
-    var $editlink = $("<a>", {id: "editlink"+id, href: "/redefine?contentid="+data['id'], target: 'blank', style: "float: right;"});
-    var $viewlink = $("<a>", {id: "viewlink"+id, href: "/view?contentid="+data['id'], target: 'blank', style: "float: right; padding-right: 15px;"});
+    var $edit_link = $("<a>", {id: "editlink"+id, href: "/redefine?content_id="+data['id'], target: 'blank', style: "float: right;"});
+    var $view_link = $("<a>", {id: "viewlink"+id, href: "/view?content_id="+data['id'], target: 'blank', style: "float: right; padding-right: 15px;"});
     var $date = $("<span>", {id: "date"+id, style: "float: right; padding-right: 15px;"});
     var $button = $("<button>", {id: "button"+id, class: "btn btn-link collapsed", 'data-toggle': "collapse", 'data-target': "#collapse"+id, 'aria-expanded': "false", 'aria-controls': "collapse"+id});
-    var $classcollapse = $("<div>", {id: "collapse"+id, class: "collapse", 'aria-labelledby': "heading"+id, 'data-parent': "#accordion"});
-    var $classcardbody = $("<div>", {id: "classcardbody"+id, class: "card-body", onclick: "showSelectedContent('"+markupcontent+"')"});
+    var $class_collapse = $("<div>", {id: "collapse"+id, class: "collapse", 'aria-labelledby': "heading"+id, 'data-parent': "#accordion"});
+    var $class_card_body = $("<div>", {id: "classcardbody"+id, class: "card-body", onclick: "show_selected_content('"+markup_content+"')"});
 
     $('#rightcolcontents').append($accordion);
-    $accordion.append($classcard);
-    $classcard.append($classcardheader);
-    $classcardheader.append($h5);
+    $accordion.append($class_card);
+    $class_card.append($class_card_header);
+    $class_card_header.append($h5);
     $h5.append($button);
-    $h5.append($editlink);
-    $h5.append($viewlink);
-    $classcardheader.append($date);
-    $classcard.append($classcollapse);
-    $classcollapse.append($classcardbody);
+    $h5.append($edit_link);
+    $h5.append($view_link);
+    $class_card_header.append($date);
+    $class_card.append($class_collapse);
+    $class_collapse.append($class_card_body);
 
-    document.getElementById("button"+id).innerHTML = "Created By: "+data.createdby+"&nbsp;&nbsp;<span style='background: black; color: black;'>|</span>&nbsp; Desc: "+data.desc;
-    document.getElementById("classcardbody"+id).innerHTML = "<pre>"+data.markdowncontent+"</pre>";
+    document.getElementById("button"+id).innerHTML = "Created By: "+data.created_by+"&nbsp;&nbsp;<span style='background: black; color: black;'>|</span>&nbsp; Desc: "+data.desc;
+    document.getElementById("classcardbody"+id).innerHTML = "<pre>"+data.markdown_content+"</pre>";
 
     document.getElementById("editlink"+id).innerHTML = "<i class='fas fa-pencil-alt'></i>";
     document.getElementById("viewlink"+id).innerHTML = "<i class='fas fa-eye'></i>";
     document.getElementById("date"+id).innerHTML = "<small>"+data.timestamp+"</small>";
 }
-function showSelectedContent(data){
+function show_selected_content(data){
     document.getElementById('Mostrecent').innerHTML = "VIEW CONTENTS";
     data.replace(' ', /\n/g);
     document.getElementById('middlecolcontentdiv').innerHTML = data;
@@ -76,42 +77,42 @@ function showSelectedContent(data){
     console.log(data);
 }
 
-function fetchprevcontent(){
+function fetch_prev_content(){
     if(prev_cursor != ''){
-        index = cursorlist.indexOf(prev_cursor)-1;
+        index = cursor_list.indexOf(prev_cursor)-1;
         if(index >= 0){
-            next_cursor = cursorlist[index];
-            prev_cursor = cursorlist[index];
-            fetchposts(false, '');
+            next_cursor = cursor_list[index];
+            prev_cursor = cursor_list[index];
+            fetch_posts(false, '');
         }
     }
 }
 
-function fetchnextcontent(){
+function fetch_next_content(){
     if(next_cursor != 'none'){
-        fetchposts(false, '');
+        fetch_posts(false, '');
     }
 }
 
-function switchoff(url){
+function switch_off(url){
     var choice = window.confirm("Are you sure you want to log out?");
      if(choice ==  true){
         window.location.replace(url);
      }
 }
-function htmlconversion(url, isPreview){
+function html_conversion(url, is_preview){
     $.ajax({
         type: 'POST',
         url: url,
         data: JSON.stringify ({
-            markdowntxt: document.getElementById('markdowntxt').value,
+            markdown_txt: document.getElementById('markdowntxt').value,
             description: document.getElementById('desc').value,
-            preview: isPreview
+            preview: is_preview
         }),
         success: function(response){
             document.getElementById('middlecolcontentdiv').innerHTML = response.content;
             document.getElementById('middlecolcontenttext').value = response.content;
-            if(isPreview == 'false'){
+            if(is_preview == 'false'){
                 window.alert("Posted content successfully");
             }
         },
@@ -119,7 +120,7 @@ function htmlconversion(url, isPreview){
         dataType: 'json'
     });
 }
-function changeView(){
+function change_View(){
     if(document.getElementById('middlecolcontentdiv').style.display == 'none'){
         document.getElementById('middlecolcontenttext').style.display = 'none';
         document.getElementById('middlecolcontentdiv').style.display = 'block';

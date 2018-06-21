@@ -1,14 +1,14 @@
-{% extends '_defaultlayout.html' %}
+{% extends '_default_layout.html' %}
 
     {% block body %}
-        <title>{{userinfo.username}}'s Profile page</title>
+        <title>{{user_info.user_name}}'s Profile page</title>
         {% if 'user' in session %}
-            <link rel="stylesheet" href="/static/stylesheets/getMarkDownStyle.css?v=1.14">
+            <link rel="stylesheet" href="/static/stylesheets/get_MarkDown_Style.css?v=1.14">
             {% include '/_navbar.html' %}<br><br><br><br>
             <div class="row container">
                 <div class="col-md-5 middlecolprof">
                     <span id="Mostrecent" style="font-family: 'Pacifico', cursive;  font-size:1.4em;">LAST MODIFIED</span>
-                    <button id="viewbtn" class="btn btn-primary" style="float: right;" onclick="changeView()">VIEW ESCAPED HTML</button>
+                    <button id="viewbtn" class="btn btn-primary" style="float: right;" onclick="change_View()">VIEW ESCAPED HTML</button>
                     <br><hr style="background:black; clear:both;">
                     <div id="middlecolcontentdiv"></div>
                     <textarea id="middlecolcontenttext"></textarea>
@@ -17,8 +17,8 @@
                     <div id="rightcolcontentsheading"></div>
                     <div id="rightcolcontents"></div>
                     <div id="pagination" style=" width: 100%; padding: 10px;">
-                        <button class="btn btn-primary" style="float:left;" onclick="fetchprevcontent()">PREV</button>
-                        <button class="btn btn-primary" style="float:right;" onclick="fetchnextcontent()">NEXT</button>
+                        <button class="btn btn-primary" style="float:left;" onclick="fetch_prev_content()">PREV</button>
+                        <button class="btn btn-primary" style="float:right;" onclick="fetch_next_content()">NEXT</button>
                     </div>
                 </div>
             </div>
@@ -42,8 +42,8 @@
         {% endif %}
         <script>
             $(document).ready(function(){
-                fetchposts(true, '{{userinfo.username}}');
+                fetch_posts(true, '{{user_info.user_name}}');
             });
         </script>
-        <script type="text/javascript" src="/static/scripts/mainscript.js"></script>
+        <script type="text/javascript" src="/static/scripts/main_script.js"></script>
     {% endblock %}

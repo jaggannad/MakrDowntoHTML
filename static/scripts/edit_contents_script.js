@@ -1,9 +1,9 @@
-function editmarkdown(url, type){
+function edit_markdown(url, type){
     $.ajax({
         type: 'POST',
         url: url,
         data: JSON.stringify ({
-            markdowntxt: document.getElementById('markdowntext').value,
+            markdown_txt: document.getElementById('markdowntext').value,
             type: type
         }),
         success: function(response){
