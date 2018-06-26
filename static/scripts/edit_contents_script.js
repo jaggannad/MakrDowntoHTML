@@ -8,6 +8,10 @@ function edit_markdown(url, type){
         }),
         success: function(response){
             document.getElementById('markupdiv').innerHTML = response.content;
+            if(type == 'post'){
+                window.alert('Posted Successully!')
+            }
+
         },
         contentType: "application/json",
         dataType: 'json'

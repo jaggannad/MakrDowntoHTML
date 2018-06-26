@@ -1,6 +1,6 @@
 {% extends '_default_layout.html' %}
     {% block body %}
-        {% if 'user' in session %}
+        {% if session_exists %}
             <link rel="stylesheet" href="/static/stylesheets/edit_contents_style.css?v=1.17">
 
             <div class="row">

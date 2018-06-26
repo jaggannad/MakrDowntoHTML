@@ -2,7 +2,7 @@
 
     {% block body %}
         <title>{{user_info.user_name}}'s Profile page</title>
-        {% if 'user' in session %}
+        {% if session_exists %}
             <link rel="stylesheet" href="/static/stylesheets/get_MarkDown_Style.css?v=1.14">
             {% include '/_navbar.html' %}<br><br><br><br>
             <div class="row container">
