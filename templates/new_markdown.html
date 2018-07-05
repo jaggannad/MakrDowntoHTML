@@ -2,26 +2,26 @@
 
     {% block body %}
         <title>{{user_name}}'s New MarkDown</title>
-        {% if 'user' in session %}
-            <link rel="stylesheet" href="/static/stylesheets/get_MarkDown_Style.css?v=1.14">
+        {% if session_exists %}
+            <link rel="stylesheet" href="/static/stylesheets/dashboard_style.css?v=1.14">
              {% include '/_navbar.html' %}<br><br><br><br>
                <div class="row container">
                     <div class="col-md-5 leftcol">
                             <div class="markdowninput">
-                                <label for="markdowntxt"><h3>Enter The MarkDown Text Here: </h3></label><br>
-                                <input type="text" id="desc" placeholder="Enter Description">
+                                <label for="markdowntxt" style="background: white; width: 100%; text-align: center;"><h3>Enter The MarkDown Text Here: </h3></label><br>
+                                <input type="text" id="newmarkdowndesc" placeholder="Enter Description" required autofocus>
                                 <textarea id="markdowntxt" name="markdowntxt" value="{{request.form.markdowntxt}}"
-                                          placeholder="Paste your MarkDown Here!" required></textarea><br><br>
+                                          placeholder="Paste your MarkDown Here!" required autofocus></textarea><br><br>
                                 <button id="previewhtml" type="button" class="btn-primary"
-                                        onclick="html_conversion('{{url_for('new_markdown', user_id=user_id)}}', 'true')">PREVIEW HTML</button>
+                                        onclick="new_markdown_validate('{{url_for('new_markdown', user_id=user_id)}}', 'true')">PREVIEW HTML</button>
                                 <button id="htmlconversion" type="button" class="btn-primary"
-                                         onclick="html_conversion('{{url_for('new_markdown', user_id=user_id)}}', 'false')">CONVERT & POST</button>
+                                         onclick="new_markdown_validate('{{url_for('new_markdown', user_id=user_id)}}', 'false')">CONVERT & POST</button>
                             </div>
                     </div>
 
                     <div class="col-md-6 middlecolnew">
                         <span id="Mostrecent" style="font-family: 'Pacifico', cursive;  font-size:1.4em;">MarkUp View</span>
-                        <button id="viewbtn" class="btn btn-primary" style="float: right;" onclick="change_View()">VIEW ESCAPED HTML</button>
+                        <button id="viewbtn" class="btn btn-primary" style="float: right; display: none;" onclick="change_View()">VIEW ESCAPED HTML</button>
                         <br><hr style="background:black; clear:both;">
                         <div id="middlecolcontentdiv"></div>
                         <textarea id="middlecolcontenttext"></textarea>

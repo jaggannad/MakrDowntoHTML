@@ -1,0 +1,57 @@
+{% extends '_default_layout.html' %}
+
+    {% block body %}
+        <title>MarkDown-Add new member</title>
+        {% if session_exists %}
+            <link rel="stylesheet" href="/static/stylesheets/dashboard_style.css?v=3.19">
+            {% include '/_navbar.html' %}<br><br><br><br>
+            <div class="row container">
+                <div id="newmemberdetails" class="col-md-5">
+                    <h3 id="newmemberdetailsheader"> Enter new member details!</h3>
+                    <div id="newmemberdetailscontents">
+
+                        <label for="newmembername">Enter Member Name:</label><br>
+                        <input id="newmembername" type="text" name="newmembername" required autofocus><br><br>
+
+                        <label for="newmemberemail">Enter Member E-Mail:</label><br>
+                        <input id="newmemberemail" type="email" name="newmemberemail" required autofocus><br><br>
+
+                        <button id="addnewmemberbtn" class="btn btn-primary"
+                                onclick="addnewmember('{{url_for('add_member')}}')">Add Member</button>
+
+                    </div>
+                </div>
+                <div id="alreadyhere" class="col-md-6">
+                    <h3 id="alreadyhereheader"></h3>
+                    <div id="alreadyherecontents">
+                        <ol id="alreadyherecontentslist">
+
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <style>
+                body{
+                    background-image: url('/static/images/session_expired.jpg');
+                }
+                .session-expired{
+                    padding:40px;
+                    background: black;
+                    opacity: .5;
+                    color: white;
+                }
+            </style>
+                <div class = "session-expired container">
+                    <h3>Oops! Your session has expired! You have to log in</h3>
+                    <a href="{{ url_for('login') }}">Log-In again!</a>
+                </div>
+        {% endif %}
+        <script>
+            $(document).ready(function(){
+                fetch_members('{{url_for('fetch_team_members')}}', '{{user_name}}');
+            });
+        </script>
+        <script type="text/javascript" src="/static/scripts/main_script.js"></script>
+    {% endblock %}

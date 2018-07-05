@@ -10,6 +10,9 @@ from google.appengine.api import taskqueue
 from models import models
 
 
+# models.TeamInfo(team_id='synclio-bab52b3fe8d2', team_name='Synclio').put()
+# models.TeamInfo(team_id='distributed-source-bab52b3fe8d2', team_name='Distributed Source').put()
+
 app = Flask(__name__)
 app.secret_key = "SYNC_MARKDOWN_1234567890"
 
@@ -19,16 +22,20 @@ config = {
     "PROFILE_SCOPE": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
     "OAUTH_ENDPOINT": "https://accounts.google.com/o/oauth2/v2/auth",
     "TOKEN_ENDPOINT": "https://www.googleapis.com/oauth2/v4/token",
-    "PROFILE_REDIRECT_URI": "http://localhost:8080/authentication",
+    # "PROFILE_REDIRECT_URI": "http://localhost:8080/authentication",
+    "PROFILE_REDIRECT_URI": "https://syncmarkdown.appspot.com/authentication"
 }
 
 
 def fetch_access_token(code, redirect_uri):
-    params = {'client_id': config.get("CLIENT_ID"),
-              'client_secret': config.get("CLIENT_SECRET"),
-              'redirect_uri': redirect_uri,
-              'grant_type': 'authorization_code',
-              'code': code}
+    params = {
+        'client_id': config.get("CLIENT_ID"),
+        'client_secret': config.get("CLIENT_SECRET"),
+        'redirect_uri': redirect_uri,
+        'grant_type': 'authorization_code',
+        'code': code,
+    }
+
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
     res = urlfetch.fetch(config.get("TOKEN_ENDPOINT"), method='POST',
@@ -36,16 +43,11 @@ def fetch_access_token(code, redirect_uri):
     return json.loads(res.content)
 
 
-@app.route('/access_denied')
-def access_denied():
-    return render_template('access_denied.html')
-
-
 @app.route('/')
 def index():
     session_id = request.cookies.get('access_token')
     if session_id and session_id != '':
-        return redirect(url_for('profile', user_id=session_id))
+        return redirect(url_for('dashboard'))
     return redirect('/login')
 
 
@@ -60,8 +62,7 @@ def register():
             flash("Registration Unsuccessful! Email Already Exists!.")
         else:
             if user_pass == confirm_pass:
-                if models.UserInfo(user_name=user_name, id=str(uuid.uuid4()), email=user_email, password=user_pass,
-                                   profilepic="default.jpg", isOnline=False).put():
+                if models.UserInfo(user_name=user_name, id=str(uuid.uuid4()), email=user_email, password=user_pass).put():
                     return redirect('/login')
                 else:
                     flash("Registration Failed! Server Error, Please Try Again Later!")
@@ -74,7 +75,7 @@ def register():
 def login():
     session_id = request.cookies.get('access_token')
     if session_id and session_id != '':
-        return redirect(url_for('profile', user_id=session_id))
+        return redirect(url_for('dashboard'))
 
     if request.method == "POST":
         user_email = request.form['email']
@@ -84,7 +85,7 @@ def login():
             session_details = models.Session(session_id=user_info.key.id(), user_name=user_info.user_name,
                                              user_email=user_info.user_email).put()
             session['user'] = session_details
-            return redirect(url_for('profile', user_id=user_info.key.id()))
+            return redirect(url_for('/dashboard'))
         else:
             flash("Invalid Credentials! Try again!")
     return render_template("login.html")
@@ -98,7 +99,8 @@ def google_login():
         'redirect_uri': config.get("PROFILE_REDIRECT_URI"),
         'access_type': 'offline',
         'response_type': 'code',
-        'prompt': 'consent'
+        'prompt': 'consent',
+        'hd': 'anywhere.co'
     }
     return redirect('{}?{}'.format(config.get("OAUTH_ENDPOINT"), urlencode(params)))
 
@@ -106,22 +108,28 @@ def google_login():
 @app.route('/authentication')
 def authentication():
     if request.args.get('error') == 'access_denied':
-        return redirect(url_for('access_denied'))
+        return render_template('access_denied')
     token_data = fetch_access_token(request.args.get('code'), config.get("PROFILE_REDIRECT_URI"))
 
     headers = {'Authorization': 'Bearer {}'.format(token_data['access_token'])}
     url = 'https://www.googleapis.com/oauth2/v1/userinfo'
     response = urlfetch.fetch(url, headers=headers, method='GET')
+
     user_data = json.loads(response.content)
     user_email = user_data.get('email')
     user_name = user_data.get('name')
     user = models.UserInfo.query(models.UserInfo.email == user_email).get()
-    if user is None:
-        user_id = str(uuid.uuid4())
-        user = models.UserInfo(id=user_id, email=user_email, user_name=user_name, password=user_id, isOnline=False).put()
-        user = models.UserInfo.query(models.UserInfo.key == user).get()
+    session_id = ''
 
-    session_id = user.key.id()
+    if user is None:
+        # user_id = str(uuid.uuid4())
+        # user = models.UserInfo(id=user_id, email=user_email, user_name=user_name, password=user_id).put()
+        # session_id = user.id()
+
+        return redirect('unauthorized')
+    else:
+        session_id = user.key.id()
+
     models.Session(session_id=session_id, user_name=user_name, user_email=user_email).put()
     response = redirect('/')
     response.set_cookie('access_token', session_id)
@@ -129,96 +137,116 @@ def authentication():
     return response
 
 
-@app.route('/profile', methods=['GET', 'POST'])
-def profile():
+@app.route('/unauthorized')
+def unauthorized():
+    return render_template('unauthorized.html')
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
     session_exists = False
     session_id = request.cookies.get('access_token')
     if session_id and session_id != '':
         session_exists = True
+        user_id = session_id
+        user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, user_id)).get()
+        return render_template("dashboard.html", user_info=user_info, user_id=user_id, session_exists=session_exists)
 
-    user_id = request.args.get('user_id')
-    user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, user_id)).get()
-    return render_template("get_MarkDown.html", user_info=user_info, user_id=user_id, session_exists=session_exists)
+    return render_template('access_denied.html')
 
 
 @app.route('/initial-contents/', defaults={'cursor': None}, methods=['GET', 'POST'])
 @app.route('/initial-contents/<cursor>', methods=['GET', 'POST'])
 def get_initial_contents(cursor):
-    cursor = Cursor(urlsafe=cursor)
+    session_id = request.cookies.get('access_token')
+    if session_id and session_id != '':
+        user_id = session_id
+        user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, user_id)).get()
 
-    content, next_cursor, more = models.HtmlContent.query().order(-models.HtmlContent.timestamp).\
-        fetch_page(8, start_cursor=cursor)
+        cursor = Cursor(urlsafe=cursor)
+        content, next_cursor, more = models.HtmlContent.query(models.HtmlContent.team_id == user_info.team_id).\
+            order(-models.HtmlContent.timestamp).fetch_page(5, start_cursor=cursor)
 
-    if next_cursor is not None:
-        next_cursor = next_cursor.urlsafe()
-    else:
-        next_cursor = 'none'
+        if next_cursor is not None:
+            next_cursor = next_cursor.urlsafe()
+        else:
+            next_cursor = 'none'
 
-    content_list = []
-    if content:
-        for feeds in content:
-            content_list.append({
-                'id': str(feeds.key.id()),
-                'markup_content': Markup(feeds.markup_content),
-                'markdown_content': feeds.markdown_content,
-                'created_by': feeds.created_by,
-                'desc': feeds.description,
-                'timestamp': feeds.timestamp
-            })
-        response = {
-            'success': True,
-            'Description': 'Posts retrieved successfully',
-            'content': content_list,
-            'timestamp': time.time(),
-            'next_cursor': next_cursor,
-            'more': more
-        }
-    else:
-        response = {
-            'success': False,
-            'Description': 'No posts available',
-            'content': None,
-            'timestamp': time.time()
-        }
-    return jsonify(response)
-
-
-@app.route('/new_markdown', methods=['GET', 'POST'])
-def new_markdown():
-    user_id = request.args.get('user_id')
-    user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, user_id)).get()
-    if request.method == 'POST':
-        markdown_content = request.json['markdown_txt']
-        description = request.json['description']
-        is_preview = request.json['preview']
-        markup_content = markdown2.markdown(markdown_content)
-
-        key = 'preview'
-
-        if is_preview == 'false':
-            content_id = str(uuid.uuid4())
-            key = models.HtmlContent(id=content_id, markup_content=markup_content, markdown_content=markdown_content,
-                                     created_by=user_info.user_name, description=description).put()
-        # time.sleep(1);
-        if key:
-            content = Markup(markup_content)
+        content_list = []
+        if content:
+            for feeds in content:
+                content_list.append({
+                    'id': str(feeds.key.id()),
+                    'markup_content': Markup(feeds.markup_content),
+                    'markdown_content': feeds.markdown_content,
+                    'created_by': feeds.created_by,
+                    'desc': feeds.description,
+                    'timestamp': feeds.timestamp
+                })
             response = {
                 'success': True,
-                'Description': 'Markdown-HTML conversion successful',
-                'content': content,
-                'created_by': user_info.user_name,
-                'desc': description,
-                'timestamp': time.time()
+                'Description': 'Posts retrieved successfully',
+                'content': content_list,
+                'timestamp': time.time(),
+                'next_cursor': next_cursor,
+                'more': more
             }
         else:
             response = {
                 'success': False,
-                'Description': 'Unable to upload to datastore',
+                'Description': 'No posts available',
                 'content': None,
                 'timestamp': time.time()
             }
         return jsonify(response)
-    return render_template('new_markdown.html', user_id=user_id, user_name=user_info.user_name)
+
+
+@app.route('/new_markdown', methods=['GET', 'POST'])
+def new_markdown():
+    session_exists = False
+    session_id = request.cookies.get('access_token')
+    if session_id and session_id != '':
+        session_exists = True
+        user_id = session_id
+        user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, user_id)).get()
+        if request.method == 'POST':
+            markdown_content = request.json['markdown_txt']
+            description = request.json['description']
+            is_preview = request.json['preview']
+            markup_content = markdown2.markdown(markdown_content, extras=["tables"])
+
+            key = 'preview'
+
+            if is_preview == 'false':
+                content_id = str(uuid.uuid4())
+                key = models.HtmlContent(id=content_id, markup_content=markup_content,
+                                         markdown_content=markdown_content,
+                                         created_by=user_info.user_name, team_id=user_info.team_id,
+                                         description=description).put()
+            # time.sleep(1);
+            if key:
+                content = Markup(markup_content)
+                response = {
+                    'success': True,
+                    'Description': 'Markdown-HTML conversion successful',
+                    'content': content,
+                    'created_by': user_info.user_name,
+                    'desc': description,
+                    'timestamp': time.time()
+                }
+            else:
+                response = {
+                    'success': False,
+                    'Description': 'Unable to upload to datastore',
+                    'content': None,
+                    'timestamp': time.time()
+                }
+            return jsonify(response)
+
+        return render_template('new_markdown.html', user_id=user_id, user_name=user_info.user_name,
+                               session_exists=session_exists)
+
+    return render_template('access_denied.html')
 
 
 @app.route('/view', methods=['GET', 'POST'])
@@ -237,10 +265,11 @@ def redefine():
     session_id = request.cookies.get('access_token')
     if session_id and session_id != '':
         session_exists = True
-    content_id = request.args.get('content_id')
-    feed = models.HtmlContent.query(models.HtmlContent.key == ndb.Key(models.HtmlContent, content_id)).get()
-    return render_template('edit_contents.html', markup=Markup(feed.markup_content), markdown=feed.markdown_content,
-                           content_id=content_id, session_exists=session_exists)
+        content_id = request.args.get('content_id')
+        feed = models.HtmlContent.query(models.HtmlContent.key == ndb.Key(models.HtmlContent, content_id)).get()
+        return render_template('edit_contents.html', markup=Markup(feed.markup_content), markdown=feed.markdown_content,
+                               content_id=content_id, session_exists=session_exists)
+    return render_template('access_denied.html')
 
 
 @app.route('/redefine-feed/', methods=['GET', 'POST'])
@@ -284,14 +313,16 @@ def redefine_functions():
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    user_id = request.args.get('user_id')
-    user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, user_id)).get()
-    user_info.isOnline = False
-    user_info.put()
+    session_id = request.cookies.get('access_token')
+    if session_id and session_id != '':
+        session_info = models.Session.query(models.Session.session_id == session_id).get()
+        if session_info:
+            session_info.key.delete()
 
-    response = redirect('/')
-    response.set_cookie('access_token', '')
-    return response
+        response = redirect('/')
+        response.set_cookie('access_token', '')
+        return response
+    return render_template("access_denied.html")
 
 
 @app.route('/markdown/html', methods=['GET', 'POST'])
@@ -304,6 +335,85 @@ def converted_content():
         return render_template("content.html", content=Markup(html_content.markup_content))
     else:
         return "Sorry No Content Available!"
+
+
+@app.route('/access_denied')
+def access_denied():
+    session_id = request.cookies.get('access_token')
+    if session_id and session_id != '':
+        return redirect('profile')
+    return render_template("access_denied.html")
+
+
+@app.route('/fetch_team_members')
+def fetch_team_members():
+    session_id = request.cookies.get('access_token')
+    if session_id and session_id != '':
+        user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, session_id)).get()
+        if user_info:
+            team_members_list = []
+            team_members = models.UserInfo.query(models.UserInfo.team_id == user_info.team_id).order(models.UserInfo.user_name)
+
+            for team_member in team_members:
+                team_members_list.append(team_member.user_name)
+
+            team_name = models.TeamInfo.query(models.TeamInfo.team_id == user_info.team_id).get().team_name
+            response = {
+                'success': True,
+                'content': team_members_list,
+                'team_name': team_name,
+                'desc': 'Fetched Team members successfully',
+                'timestamp': time.time()
+            }
+        else:
+            response = {
+                'success': False,
+                'desc': 'Invalid User',
+                'timestamp': time.time()
+            }
+
+        return jsonify(response)
+    return render_template("access_denied.html")
+
+
+@app.route('/add_member', methods=['GET', 'POST'])
+def add_member():
+    session_exists = False
+    session_id = request.cookies.get('access_token')
+    if session_id and session_id != '':
+        user_id = session_id
+        user_info = models.UserInfo.query().filter(models.UserInfo.key == ndb.Key(models.UserInfo, user_id)).get()
+        session_exists = True
+
+        if request.method == "POST":
+            new_member_id = str(uuid.uuid4())
+            new_member_email = request.json['new_member_email']
+            new_member_name = request.json['new_member_name']
+            new_member_team_id = user_info.team_id
+
+            if models.UserInfo.query(models.UserInfo.email == new_member_email).get() is None:
+                if models.UserInfo(id=new_member_id, user_name=new_member_name, team_id=new_member_team_id,
+                                   email=new_member_email, password=new_member_id).put():
+                    response = {
+                        'success': True,
+                        'desc': 'Member added successfully',
+                        'timestamp': time.time()
+                    }
+                else:
+                    response = {
+                        'success': False,
+                        'desc': 'Unable to add new member. Please try after sometime!',
+                        'timestamp': time.time()
+                    }
+            else:
+                response = {
+                    'success': False,
+                    'desc': 'Member already exists!',
+                    'timestamp': time.time()
+                }
+            return jsonify(response)
+        return render_template('add_new_member.html', session_exists=session_exists, user_name=user_info.user_name)
+    return redirect(url_for('access_denied'))
 
 
 if __name__ == "__main__":

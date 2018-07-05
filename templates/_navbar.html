@@ -4,30 +4,33 @@
       <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
             <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault" style="padding-left: 8.666%;">
+      <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault" style="padding-left: 2.666%;">
             <ul class="navbar-nav mr-auto">
                   <li class="nav-item active">
-                        <a class="nav-link" href="{{url_for('new_markdown', user_id=user_id)}}">New MarkDown <span class="sr-only">(current)</span></a>
+                        <a id="newmarkdownlink" class="nav-link" href="javascript: checklink('{{url_for('new_markdown')}}')">New MarkDown
+                              <span class="sr-only">(current)</span>
+                        </a>
                   </li>
 
                   <li class="nav-item active">
-                        <a class="nav-link" href="{{url_for('profile', user_id=user_id)}}">Dashboard</a>
+                        <a id="dashboardlink" class="nav-link" href="javascript: checklink('{{url_for('dashboard')}}')">Dashboard</a>
                   </li>
+
+                  <li class="nav-item active">
+                        <button class="btn btn-link" id="addnewmemberlink" class="nav-link" style="color: white;"
+                        onclick="checklink('{{url_for('add_member')}}')">Add new member +</button>
+                  </li>
+
             </ul>
+            <span id="title" class="text-center" style="padding-right: 100px; color: white;">Application -
+                  <span style="font-family: 'Pacifico', cursive; font-size: 1.3em; "></span>[
+                  <code>&nbsp;MarkDown --> Html&nbsp;</code>]
+            </span>
             <div class="form-inline my-2 my-lg-0">
-                  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-
-                  <!-- Settings button-->
-                  <div class="dropdown">
-                    <button type = "button" class="dropbtn btn my-2 my-sm-0">Settings <i class="fa fa-caret-down"></i></button>
-                    <div class="dropdown-content">
-                      <a href="#">Account</a>
-                      <button button type="button" class="btn btn-link" onclick="switch_off('{{ url_for('logout', user_id=user_id) }}')">Log out</button>
-                    </div>
-                  </div>
-
+                <!-- Settings button-->
+                <button id="logoutbtn" type="button" class="btn btn-link" onclick="switch_off('{{ url_for('logout') }}')">
+                      <code>Log out</code>
+                </button>
             </div>
       </div>
 </nav>

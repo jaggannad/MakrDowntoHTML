@@ -9,7 +9,8 @@ function edit_markdown(url, type){
         success: function(response){
             document.getElementById('markupdiv').innerHTML = response.content;
             if(type == 'post'){
-                window.alert('Posted Successully!')
+                if(!($('#popups').length))
+                    popup("Posted content successfully");
             }
 
         },
@@ -18,3 +19,14 @@ function edit_markdown(url, type){
     });
 }
 
+function popup(content){
+    var $popups = $("<div>", {id: 'popups',
+    style: 'width: 30%; height: 100px; position: absolute; top: 15%; left: 35%; background: white; border-radius: 10px;'
+     +'color: black; text-align: center;' });
+
+    $('body').append($popups);
+    document.getElementById('popups').innerHTML = "<hr><p style='padding: auto;'><code>"+content+"!</code></p><hr>";
+    $('#popups').fadeOut(3000, function(){
+        $('#popups').remove();
+    });
+}

@@ -5,17 +5,21 @@
 
             <div class="row">
                 <div class="col-lg-6 leftcol">
-                    <label for="markdowntext"><h3>MARKDOWN VIEW</h3></label>
+                    <div id="markdowntextheader">
+                        <span><h3>Enter MarkDown</h3></span>
+                    </div>
                     <textarea name="markdowntext" id="markdowntext">{{markdown}}</textarea>
-                    <button id="markdownpostbtn" style="float:left;"
+                    <button id="markdownpostbtn" class="btn btn-primary" style="float:left;"
                             onclick="edit_markdown('{{url_for('redefine_functions', content_id=content_id, type= 'post')}}', 'post')">
                         Post</button>
-                    <button id="markdownpreviewbtn" style="float:right;"
+                    <button id="markdownpreviewbtn" class="btn btn-primary" style="float:right;"
                             onclick="edit_markdown('{{url_for('redefine_functions', content_id=content_id, type='preview')}}', 'preview')">
                         Preview</button>
                 </div>
                 <div class="col-md-5 rightcol">
-                    <label for="markupdiv"><h3>MARKUP VIEW</h3></label>
+                    <div id="markupdivheader">
+                        <span><h3>MarkDown Preview</h3></span><hr style="background: black;">
+                    </div>
                     <div name="markupdiv" id="markupdiv">{{markup}}</div>
                 </div>
             </div>

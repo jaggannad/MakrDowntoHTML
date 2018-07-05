@@ -1,0 +1,18 @@
+{% extends '_default_layout.html' %}
+    {% block body %}
+        <title>Access Denied</title>
+        <style>
+            body{
+                background-image: url('https://images2.alphacoders.com/708/thumb-1920-708647.jpg');
+            }
+            .session-expired{
+                padding:40px;
+                background: black;
+                opacity: .5;
+                color: white;
+            }
+        </style>
+            <div class = "session-expired container">
+                <h3>Sorry, Looks like you are Unauthorized!</h3>
+            </div>
+    {% endblock %}

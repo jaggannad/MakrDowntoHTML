@@ -1,28 +1,51 @@
+body{
+    background: url('/static/images/wallpapers4.jpg');
+}
 .leftcol{
     position: absolute;
     top: 35px;
-    left: 0px;
+    left: 30px;
     overflow-y: scroll;
     height: 90%;
+    padding: 20px;
     border-style: solid;
     border-width: 0px 3px 0px 0px;
+    background: #ECF0F1;
 }
 .rightcol{
     position: absolute;
     top: 35px;
-    right: 0px;
-    overflow-y: scroll;
+    right: 30px;
     height: 90%;
+    padding: 20px;
     border-style: solid;
     border-width: 0px 0px 0px 0px;
+    background: #ECF0F1;
 }
 
 #markdowntext{
     width:100%;
     height: 85%;
+    padding: 20px 40px;
 }
 
 #markupdiv{
     width:100%;
     height: 90%;
+    padding: 0px 40px 30px 40px;
+    overflow-y: scroll;
+}
+
+#markdowntextheader{
+    font-family: 'IM Fell English SC', cursive;
+    font-size: 1.4em;
+    padding: 10px;
+    text-align: center;
+}
+
+#markupdivheader{
+    font-family: 'IM Fell English SC', cursive;
+    font-size: 1.4em;
+    text-align: center;
+    padding: 10px;
 }
