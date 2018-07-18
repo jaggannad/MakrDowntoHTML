@@ -1,29 +1,39 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'stylesheets/Navbar_style.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'stylesheets/navbar_style.css')}}">
 <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-      <a class="navbar-brand" href="https://full.io/">FULL Creative</a>
+      <a class="navbar-brand" href="https://full.io/">FULL</a>
       <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
             <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault" style="padding-left: 2.666%;">
             <ul class="navbar-nav mr-auto">
-                  <li class="nav-item active">
-                        <a id="newmarkdownlink" class="nav-link" href="javascript: checklink('{{url_for('new_markdown')}}')">New MarkDown
-                              <span class="sr-only">(current)</span>
-                        </a>
-                  </li>
 
                   <li class="nav-item active">
                         <a id="dashboardlink" class="nav-link" href="javascript: checklink('{{url_for('dashboard')}}')">Dashboard</a>
                   </li>
 
                   <li class="nav-item active">
-                        <button class="btn btn-link" id="addnewmemberlink" class="nav-link" style="color: white;"
-                        onclick="checklink('{{url_for('add_member')}}')">Add new member +</button>
+                        <a id="newprojectlink" class="nav-link" style="cursor: pointer;">New Project</a>
+                  </li>
+
+                  <li class="nav-item active">
+                        <a id="newmarkdownlink" class="nav-link" href="javascript: checklink('{{url_for('new_markdown')}}', '{{user_info.current_team}}')">New MarkDown
+                              <span class="sr-only">(current)</span>
+                        </a>
+                  </li>
+
+                  <li class="nav-item active">
+                        <a id="addnewmemberlink" class="nav-link" href="javascript: checklink('{{url_for('add_member')}}', '{{user_info.current_team}}')">Add new member +</a>
+                  </li>
+
+
+                  <li class="nav-item active">
+                        <button class="btn btn-link" id="cheatsheetlink" class="nav-link" style="color: white;"
+                        onclick="show_cheat_sheet()">What is MarkDown ?</button>
                   </li>
 
             </ul>
-            <span id="title" class="text-center" style="padding-right: 100px; color: white;">Application -
-                  <span style="font-family: 'Pacifico', cursive; font-size: 1.3em; "></span>[
+            <span id="title" class="text-center" style="padding-right: 40px; color: white;">Application -
+                  <span style="font-family: 'Pacifico', cursive;"></span>[
                   <code>&nbsp;MarkDown --> Html&nbsp;</code>]
             </span>
             <div class="form-inline my-2 my-lg-0">
@@ -34,3 +44,5 @@
             </div>
       </div>
 </nav>
+{% include '/cheat_sheet_modal.html' %}
+{% include '/create_new_project_modal.html' %}

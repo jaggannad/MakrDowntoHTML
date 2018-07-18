@@ -3,7 +3,7 @@ body{
 }
 .leftcol{
     position: absolute;
-    top: 35px;
+    top: 75px;
     left: 30px;
     overflow-y: scroll;
     height: 90%;
@@ -14,7 +14,7 @@ body{
 }
 .rightcol{
     position: absolute;
-    top: 35px;
+    top: 75px;
     right: 30px;
     height: 90%;
     padding: 20px;

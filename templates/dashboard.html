@@ -13,13 +13,43 @@
                     <div id="middlecolcontentdiv"></div>
                     <textarea id="middlecolcontenttext"></textarea>
                 </div>
+
+
                 <div id="rightcol" class="col-md-6 rightcol">
                     <div id="rightcolcontentsheading" style="font-size: 0.5em;"></div>
-                    <div id="rightcolcontents"></div>
-                    <div id="pagination" style=" width: 100%; height: 5%; padding: 10px;">
-                        <button id="prevbtn" class="btn btn-primary" style="float:left;" onclick="fetch_prev_content()">PREV</button>
-                        <button id="nextbtn" class="btn btn-primary" style="float:right;" onclick="fetch_next_content()">NEXT</button>
+                    <div id="rightcolcontents">
+                        <div id="accordion"></div>
                     </div>
+                    <div id="pagination" style=" width: 100%; height: 5%; padding: 10px;">
+                        <button id="prevbtn" class="btn btn-primary" style="float:left;" onclick="fetch_prev_content('{{user_info.current_team}}')">PREV</button>
+                        <button id="nextbtn" class="btn btn-primary" style="float:right;" onclick="fetch_next_content('{{user_info.current_team}}')">NEXT</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="visibilty-teams" class="visibilty-teams">
+
+              <!-- Modal content -->
+              <div class="visibilty-teams-content" style="padding: 10px 40px 40px 40px;">
+                <span class="visibilty-teams-close">&times;</span>
+                <div id="select-teams" style="overflow: hidden ;clear: both; display: block;">
+                    <h3 id="select-teams-header">Select Domains</h3>
+                    <div id="teams"></div>
+                    <input id="new_domain_name" type="text" placeholder="Enter New Domain" required autofocus><br><hr>
+                    <button id="addnewdomain" class="btn btn-primary" style="float: left;">Add Domain</button>
+                    <button id="selectteamsbtn" class="btn btn-primary" style="float: right;">Change Visibility</button>
+                </div>
+              </div>
+
+            </div>
+
+            <div id="selectprojectfloat" onclick="selectprojectsnavopennav('{{user_info.user_name}}', '{{user_info.current_team}}')">&#9776; Projects</div>
+
+            <div id="selectprojectsnav" class="selectprojectsnav">
+                <a href="javascript:void(0)" class="selectprojectsnavclosebtn" onclick="selectprojectsnavclosenav()">&times;</a>
+                <div class="selectprojectsnavoverlay-content">
+                    <h3 id="selectprojectsnavoverlay-header"><code>Select Project</code></h3>
                 </div>
             </div>
 
@@ -41,9 +71,13 @@
                 </div>
         {% endif %}
         <script>
+            var current_team = '{{user_info.current_team}}';
+
             $(document).ready(function(){
-                fetch_posts(true, '{{user_info.user_name}}');
+                fetch_posts(true, '{{user_info.user_name}}', current_team);
             });
+
+
         </script>
         <script type="text/javascript" src="/static/scripts/main_script.js"></script>
     {% endblock %}

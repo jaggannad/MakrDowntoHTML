@@ -2,7 +2,7 @@
     {% block body %}
         {% if session_exists %}
             <link rel="stylesheet" href="/static/stylesheets/edit_contents_style.css?v=1.17">
-
+            {% include '/_navbar.html' %}
             <div class="row">
                 <div class="col-lg-6 leftcol">
                     <div id="markdowntextheader">
@@ -42,4 +42,5 @@
                 </div>
         {% endif %}
         <script type="text/javascript" src="/static/scripts/edit_contents_script.js"></script>
+        <script type="text/javascript" src="/static/scripts/main_script.js"></script>
     {% endblock %}
